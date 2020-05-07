@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 class VtexClient {
-  constructor(appKey, appToken) {
+  constructor(appKey, appToken, account) {
     this.baseUrl = `https://${account}.vtexcommercestable.com.br`;
     this.headers = {
       "Content-Type": "application/json",
@@ -25,7 +25,7 @@ class VtexClient {
     }
   }
 
-  async findAll(acronym, fields, where) {
+  async search(acronym, fields, where) {
     try {
       const { data, status } = await axios.get(
         `${this.baseUrl}/api/dataentities/${acronym}/search?_fields=${fields}&_where=${where}`,

@@ -29,16 +29,18 @@ module.exports = {
       const user = await User.findById(id);
 
       if (!user) {
-        return res.status(400).json({
+        return res.json({
           error: true,
           message: "User not found",
         });
       }
 
-      const accountExists = await Accounts.findOne({ name: account.name });
+      const accountExists = await Accounts.find()
+        .where("name")
+        .in(account.name);
 
-      if (accountExists) {
-        return res.status(400).json({
+      if (accountExists.length) {
+        return res.json({
           error: true,
           message: `Account ${account.name} already exists!`,
         });
@@ -49,9 +51,7 @@ module.exports = {
         ...account,
       });
 
-      const accounts = await Accounts.find().where("userId").in(id);
-
-      user.accounts = accounts;
+      user.accounts = accountExists;
 
       return res.status(201).json(user);
     } catch (error) {
@@ -68,7 +68,7 @@ module.exports = {
       const user = await User.findById(userId);
 
       if (!user) {
-        return res.status(400).json({
+        return res.json({
           error: true,
           message: "User not found",
         });
@@ -93,7 +93,7 @@ module.exports = {
       const user = await User.findById(req.body.id).select("-password");
 
       if (!user) {
-        return res.status(400).json({
+        return res.json({
           error: true,
           message: "User not found",
         });
@@ -118,7 +118,7 @@ module.exports = {
 
       const account = await Accounts.findOne({ name });
       if (!account) {
-        return res.status(400).json({
+        return res.json({
           error: true,
           message: "Account not found",
         });
@@ -130,9 +130,18 @@ module.exports = {
         },
       });
 
+      if (user.account.name === name) {
+        return res.json({
+          error: true,
+          message: "Account is already in use",
+        });
+      }
+
       await user.save();
 
       const newUser = await User.findById(id);
+      const accounts = await Accounts.find().where("userId").in(id);
+      newUser.accounts = accounts;
 
       return res.status(200).json(newUser);
     } catch (error) {

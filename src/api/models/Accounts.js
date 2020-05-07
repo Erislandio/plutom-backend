@@ -4,17 +4,14 @@ const accountsSchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
   },
   appKey: {
     type: String,
     required: true,
-    unique: true,
   },
   appToken: {
     type: String,
     required: true,
-    unique: true,
   },
   userId: {
     type: String,
@@ -22,6 +19,6 @@ const accountsSchema = new Schema({
   },
 });
 
-const Accounts = model("Accounts", accountsSchema);
+const Accounts = model("UserAccounts", accountsSchema);
 
 module.exports = Accounts;
