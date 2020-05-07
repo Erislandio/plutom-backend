@@ -1,4 +1,5 @@
 const User = require("../models/User.js");
+const Accounts = require("../models/Accounts");
 
 module.exports = {
   async store(req, res) {
@@ -10,9 +11,165 @@ module.exports = {
         password,
       });
 
+      newUser.password = null;
+
       return res.status(201).json(newUser);
     } catch (error) {
-      return error;
+      return res.status(500).json({
+        error: true,
+        message: error.message,
+      });
+    }
+  },
+
+  async add(req, res) {
+    try {
+      const { id, account } = req.body;
+
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(400).json({
+          error: true,
+          message: "User not found",
+        });
+      }
+
+      const accountExists = await Accounts.findOne({ name: account.name });
+
+      if (accountExists) {
+        return res.status(400).json({
+          error: true,
+          message: `Account ${account.name} already exists!`,
+        });
+      }
+
+      await Accounts.create({
+        userId: id,
+        ...account,
+      });
+
+      const accounts = await Accounts.find().where("userId").in(id);
+
+      user.accounts = accounts;
+
+      return res.status(201).json(user);
+    } catch (error) {
+      return res.status(500).json({
+        error: true,
+        message: error.message,
+      });
+    }
+  },
+  async removeAccount(req, res) {
+    try {
+      const { userId, id } = req.body;
+
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return res.status(400).json({
+          error: true,
+          message: "User not found",
+        });
+      }
+
+      await Accounts.findByIdAndDelete(id);
+
+      const accounts = await Accounts.find().where("userId").in(userId);
+
+      user.accounts = accounts;
+
+      return res.status(201).json(user);
+    } catch (error) {
+      return res.status(500).json({
+        error: true,
+        message: error.message,
+      });
+    }
+  },
+  async find(req, res) {
+    try {
+      const user = await User.findById(req.body.id).select("-password");
+
+      if (!user) {
+        return res.status(400).json({
+          error: true,
+          message: "User not found",
+        });
+      }
+
+      const accounts = await Accounts.find().where("userId").in(req.body.id);
+
+      user.accounts = accounts;
+
+      return res.status(200).send(user);
+    } catch (error) {
+      return res.status(500).json({
+        error: true,
+        message: error.message,
+      });
+    }
+  },
+
+  async setAccount(req, res) {
+    try {
+      const { name, id } = req.body;
+
+      const account = await Accounts.findOne({ name });
+      if (!account) {
+        return res.status(400).json({
+          error: true,
+          message: "Account not found",
+        });
+      }
+
+      const user = await User.findByIdAndUpdate(id, {
+        $set: {
+          account,
+        },
+      });
+
+      await user.save();
+
+      const newUser = await User.findById(id);
+
+      return res.status(200).json(newUser);
+    } catch (error) {
+      return res.status(500).json({
+        error: true,
+        message: error.message,
+      });
+    }
+  },
+
+  async exit(req, res) {
+    try {
+      const { id } = req.body;
+
+      const user = await User.findByIdAndUpdate(id, {
+        $set: {
+          account: {
+            name: null,
+            appKey: null,
+            appToken: null,
+          },
+        },
+      });
+
+      await user.save();
+
+      const newUser = await User.findById(id);
+
+      const accounts = await Accounts.find().where("userId").in(req.body.id);
+      newUser.accounts = accounts;
+
+      return res.status(200).json(newUser);
+    } catch (error) {
+      return res.status(500).json({
+        error: true,
+        message: error.message,
+      });
     }
   },
 };

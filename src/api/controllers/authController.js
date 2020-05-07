@@ -24,6 +24,8 @@ module.exports = {
       if (!(await bcrypt.compare(password, user.password)))
         return res.status(200).send({ error: "Senha incorreta" });
 
+      user.password = null;
+
       res.status(200).send({
         user,
         token: generateToken({ id: user.id }),

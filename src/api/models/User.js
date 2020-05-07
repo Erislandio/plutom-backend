@@ -18,6 +18,14 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    account: {
+      type: Object,
+      default: {
+        name: String,
+        appKey: String,
+        appToken: String,
+      }
+    }
   },
   {
     timestamps: true,

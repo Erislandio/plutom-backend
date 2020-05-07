@@ -8,6 +8,8 @@
     "start": "nodemon ./src/server.js"
   },
   "dependencies": {
+    "@vtex/api": "^6.28.1",
+    "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.0.0",
