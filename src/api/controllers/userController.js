@@ -6,9 +6,23 @@ module.exports = {
     try {
       const { email, password } = req.body;
 
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.json({
+          error: true,
+          message: `Email: ${email} already exists`,
+        });
+      }
+
       const newUser = await User.create({
         email,
         password,
+        account: {
+          name: null,
+          appKey: null,
+          appToken: null,
+        },
       });
 
       newUser.password = null;
