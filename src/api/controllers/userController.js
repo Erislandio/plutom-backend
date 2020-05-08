@@ -18,11 +18,6 @@ module.exports = {
       const newUser = await User.create({
         email,
         password,
-        account: {
-          name: null,
-          appKey: null,
-          appToken: null,
-        },
       });
 
       newUser.password = null;
