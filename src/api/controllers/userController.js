@@ -190,7 +190,16 @@ module.exports = {
     try {
       const { id } = req.body;
 
-      await User.findByIdAndUpdate(id, {
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.json({
+          error: true,
+          message: "User not found",
+        });
+      }
+
+      await user.updateOne({
         $set: {
           account: {
             name: null,
