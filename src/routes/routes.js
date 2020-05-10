@@ -16,6 +16,7 @@ routes.get("/v1/user", userController.find);
 routes.post("/v1/login", authController.login);
 routes.post("/v1/add", userController.add);
 routes.delete("/v1/user/account", userController.removeAccount);
+routes.get("/v1/user/account", userController.getAccounts);
 routes.post("/v1/set/account", userController.setAccount);
 routes.post("/v1/exit/account", userController.exit);
 routes.post("/v1/search/databases", vtexController.databases);

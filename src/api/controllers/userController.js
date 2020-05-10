@@ -161,6 +161,30 @@ module.exports = {
     }
   },
 
+  async getAccounts(req, res) {
+    try {
+      const { id } = req.body;
+
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.json({
+          error: true,
+          message: "User not found",
+        });
+      }
+
+      const accounts = await Accounts.find().where("userId").in(req.body.id);
+
+      return res.status(200).json(accounts);
+    } catch (error) {
+      return res.status(500).json({
+        error: true,
+        message: error.message,
+      });
+    }
+  },
+
   async exit(req, res) {
     try {
       const { id } = req.body;
