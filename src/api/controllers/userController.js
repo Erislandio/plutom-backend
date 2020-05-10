@@ -98,7 +98,7 @@ module.exports = {
   },
   async find(req, res) {
     try {
-      const { id } = req.params;
+      const { id } = req.query;
 
       const user = await User.findById(id);
 
@@ -164,7 +164,7 @@ module.exports = {
 
   async getAccounts(req, res) {
     try {
-      const { id } = req.params;
+      const { id } = req.query;
 
       const user = await User.findById(id);
 
