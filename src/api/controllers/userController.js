@@ -200,7 +200,6 @@ module.exports = {
         },
       });
 
-      await user.save();
 
       const newUser = await User.findById(id);
 
