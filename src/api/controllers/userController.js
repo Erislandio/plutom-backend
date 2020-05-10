@@ -190,7 +190,7 @@ module.exports = {
     try {
       const { id } = req.body;
 
-      const user = await User.findByIdAndUpdate(id, {
+      await User.findByIdAndUpdate(id, {
         $set: {
           account: {
             name: null,
@@ -200,11 +200,7 @@ module.exports = {
         },
       });
 
-
       const newUser = await User.findById(id);
-
-      const accounts = await Accounts.find().where("userId").in(req.body.id);
-      newUser.accounts = accounts;
 
       return res.status(200).json(newUser);
     } catch (error) {
