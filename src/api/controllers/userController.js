@@ -113,7 +113,7 @@ module.exports = {
       user.password = null;
       user.accounts = accounts;
 
-      return res.status(200).send(user);
+      return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json({
         error: true,
@@ -175,7 +175,7 @@ module.exports = {
         });
       }
 
-      const accounts = await Accounts.find().where("userId").in(req.body.id);
+      const accounts = await Accounts.find().where("userId").in(id);
 
       return res.status(200).json(accounts);
     } catch (error) {
