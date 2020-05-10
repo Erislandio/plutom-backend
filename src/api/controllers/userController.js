@@ -153,9 +153,22 @@ module.exports = {
         });
       }
 
-      user.account = account;
-
-      await user.save();
+      User.findByIdAndUpdate(
+        id,
+        {
+          account,
+        },
+        { new: false }
+      )
+        .then((data) => {
+          return res.status(201).json(data);
+        })
+        .catch((error) => {
+          return res.status(500).json({
+            error: true,
+            message: error.message,
+          });
+        });
 
       return res.status(200).json(user);
     } catch (error) {
