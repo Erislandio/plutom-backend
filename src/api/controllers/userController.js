@@ -44,11 +44,11 @@ module.exports = {
         });
       }
 
-      const accountExists = await Accounts.find()
-        .where("name")
-        .in(account.name);
+      const accounts = await Accounts.find().where("userId").in(id);
 
-      if (accountExists.length) {
+      const findAccount = accounts.filter((item) => item.name === account.name);
+
+      if (findAccount.length) {
         return res.json({
           error: true,
           message: `Account ${account.name} already exists!`,
