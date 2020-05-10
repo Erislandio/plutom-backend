@@ -32,7 +32,7 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.pre("create", async function (next) {
+UserSchema.pre("insertMany", async function (next) {
   const hash = await bcrypt.hash(this.password, 10);
   this.password = hash;
   next();
