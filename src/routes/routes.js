@@ -12,15 +12,15 @@ routes.get("/info", (req, res) => {
 });
 
 routes.post("/v1/user", userController.store);
-routes.get("/v1/user", userController.find);
+routes.get("/v1/user", auth, userController.find);
 routes.post("/v1/login", authController.login);
-routes.post("/v1/add", userController.add);
-routes.delete("/v1/user/account", userController.removeAccount);
-routes.get("/v1/user/account", userController.getAccounts);
-routes.post("/v1/set/account", userController.setAccount);
-routes.post("/v1/exit/account", userController.exit);
-routes.post("/v1/search/databases", vtexController.databases);
-routes.post("/v1/search", vtexController.search);
-routes.post("/v1/desc", vtexController.desc);
+routes.post("/v1/add", auth,userController.add);
+routes.delete("/v1/user/account", auth, userController.removeAccount);
+routes.get("/v1/user/account", auth, userController.getAccounts);
+routes.post("/v1/set/account", auth, userController.setAccount);
+routes.post("/v1/exit/account", auth, userController.exit);
+routes.post("/v1/search/databases", auth, vtexController.databases);
+routes.post("/v1/search", auth, vtexController.search);
+routes.post("/v1/desc", auth, vtexController.desc);
 
 module.exports = routes;
