@@ -126,7 +126,16 @@ module.exports = {
     try {
       const { name, id } = req.body;
 
-      const account = await Accounts.findOne({ name });
+      const accounts = await Accounts.find().where("userId").in(id);
+      if (!accounts.length) {
+        return res.json({
+          error: true,
+          message: "Account not registred",
+        });
+      }
+
+      const account = accounts.find((item) => item.name === name);
+
       if (!account) {
         return res.json({
           error: true,
@@ -136,26 +145,19 @@ module.exports = {
 
       const user = await User.findById(id);
 
-      await user.updateOne({
-        account: {
-          ...account,
-        },
-      });
-
-      if (user.account.name === name) {
+      if (user.account && user.account.name === name) {
         return res.json({
           error: true,
-          message: "Account is already in use",
+          message:
+            "Account is already in use, try using another account with the --use command",
         });
       }
 
+      user.account = account;
+
       await user.save();
 
-      const newUser = await User.findById(id);
-      const accounts = await Accounts.find().where("userId").in(id);
-      newUser.accounts = accounts;
-
-      return res.status(200).json(newUser);
+      return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json({
         error: true,
