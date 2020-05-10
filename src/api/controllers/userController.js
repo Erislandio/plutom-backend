@@ -86,7 +86,6 @@ module.exports = {
       await Accounts.findByIdAndDelete(id);
 
       const accounts = await Accounts.find().where("userId").in(userId);
-
       user.accounts = accounts;
 
       return res.status(201).json(user);
@@ -99,7 +98,9 @@ module.exports = {
   },
   async find(req, res) {
     try {
-      const user = await User.findById(req.body.id).select("-password");
+      const { id } = req.params;
+
+      const user = await User.findById(id);
 
       if (!user) {
         return res.json({
@@ -108,8 +109,8 @@ module.exports = {
         });
       }
 
-      const accounts = await Accounts.find().where("userId").in(req.body.id);
-
+      const accounts = await Accounts.find().where("userId").in(id);
+      user.password = null;
       user.accounts = accounts;
 
       return res.status(200).send(user);
@@ -163,7 +164,7 @@ module.exports = {
 
   async getAccounts(req, res) {
     try {
-      const { id } = req.body;
+      const { id } = req.params;
 
       const user = await User.findById(id);
 
