@@ -134,9 +134,11 @@ module.exports = {
         });
       }
 
-      const user = await User.findByIdAndUpdate(id, {
-        $set: {
-          account,
+      const user = await User.findById(id);
+
+      await user.updateOne({
+        account: {
+          ...account,
         },
       });
 
