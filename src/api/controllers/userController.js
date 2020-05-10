@@ -60,7 +60,7 @@ module.exports = {
         ...account,
       });
 
-      user.accounts = accountExists;
+      user.accounts = accounts;
 
       return res.status(201).json(user);
     } catch (error) {
