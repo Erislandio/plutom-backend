@@ -72,7 +72,7 @@ module.exports = {
   },
   async removeAccount(req, res) {
     try {
-      const { id, name } = req.body;
+      const { id, accountId } = req.body;
 
       const user = await User.findById(id);
 
@@ -83,7 +83,7 @@ module.exports = {
         });
       }
 
-      await Accounts.findOneAndDelete(name);
+      await Accounts.findByIdAndDelete(accountId);
 
       const accounts = await Accounts.find().where("userId").in(id);
       user.accounts = accounts;
